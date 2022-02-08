@@ -1,14 +1,12 @@
 package study.datajpa.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 //jpa 표준 스펙 -> entity생성 시 default 생성자가 하나 있어야 하고 protected로 열어야함
 //proxy 기술 때문에 private로 하면 proxy 기술들이 막힌다.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
