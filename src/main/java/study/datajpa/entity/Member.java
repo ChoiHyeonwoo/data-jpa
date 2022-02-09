@@ -12,6 +12,9 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 //연관관계 필드는 toString 하지말것
 @ToString(of = {"id", "username", "age"})
+//쿼리 명명,,, 거의안쓴다.
+@NamedQuery(name = "Member.findByUsername",
+        query = "select m from Member m where m.userName = :username")
 public class Member {
 
     @Id
