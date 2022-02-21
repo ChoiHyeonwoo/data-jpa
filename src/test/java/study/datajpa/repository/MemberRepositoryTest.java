@@ -12,6 +12,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +30,9 @@ class MemberRepositoryTest {
 
     @Autowired
     TeamRepository teamRepository;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Test
     void testMember() {
@@ -197,5 +202,22 @@ class MemberRepositoryTest {
         assertThat(page.getTotalPages()).isEqualTo(2);
         assertThat(page.isFirst()).isTrue();
         assertThat(page.hasNext()).isTrue();
+    }
+
+    @Test
+    void bulkUpdate(){
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+
+        // 주의 : bulk 연산은 db에 직접 하기때문에 영속성 컨텍스트와 동기화가 안됨.
+        int resultCount = memberRepository.bulkAgePlus(20);
+        // persistenceContext를 지우고 다시. -> @Modifying(clearAutomatically = true) // clearAutomatically = true 로 대체
+        // entityManager.flush();
+        // entityManager.clear();
+
+        assertThat(resultCount).isEqualTo(3);
     }
 }
