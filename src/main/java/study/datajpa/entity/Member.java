@@ -15,6 +15,7 @@ import javax.persistence.*;
 //쿼리 명명,,, 거의안쓴다.
 @NamedQuery(name = "Member.findByUsername",
         query = "select m from Member m where m.userName = :username")
+@NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
 public class Member {
 
     @Id

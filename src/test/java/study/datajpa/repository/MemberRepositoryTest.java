@@ -220,4 +220,33 @@ class MemberRepositoryTest {
 
         assertThat(resultCount).isEqualTo(3);
     }
+
+    @Test
+    void findMemberLazy(){
+        //given
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        // when N + 1 문제,,,
+        // select Member 1 -> 쿼리는 findAll() 한개 실행했으나 member.getTeam()을 N번 만큼 또 조회
+        List<Member> members = memberRepository.findAll();
+
+        for (Member member: members){
+            System.out.println("member = " + member.getUserName());
+            System.out.println("member.getTeam().getClass() = " + member.getTeam().getClass());
+            System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
+        }
+    }
 }
