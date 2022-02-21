@@ -3,19 +3,20 @@ package study.datajpa.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -164,5 +165,37 @@ class MemberRepositoryTest {
 
         Optional<Member> aaa = memberRepository.findOptionalByUserName("AAA");
         System.out.println("aaa.get() = " + aaa.get());
+    }
+
+    @Test
+    void paging(){
+        // given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
+
+        int age = 10;
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "userName"));
+
+        //when
+        Page<Member> page = memberRepository.findByAge(age, pageRequest);
+
+        //Collection<Entity> -> Collection<Dto>
+        //Entity를 controller에 그대로 반환하면 안됨 -> 클라이언트가 모르게끔 보호해야함.
+        Page<MemberDto> toDto = page.map(m -> new MemberDto(m.getId(), m.getUserName(), null));
+
+        //then
+        List<Member> members = page.getContent();
+        long totalElements = page.getTotalElements();
+
+        assertThat(members.size()).isEqualTo(3);
+        assertThat(totalElements).isEqualTo(5);
+        //주의 : page index 시작은 0
+        assertThat(page.getNumber()).isEqualTo(0);
+        assertThat(page.getTotalPages()).isEqualTo(2);
+        assertThat(page.isFirst()).isTrue();
+        assertThat(page.hasNext()).isTrue();
     }
 }
