@@ -11,12 +11,12 @@ import javax.persistence.*;
 //proxy 기술 때문에 private로 하면 proxy 기술들이 막힌다.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 //연관관계 필드는 toString 하지말것
-@ToString(of = {"id", "username", "age"})
+@ToString(of = {"id", "userName", "age"})
 //쿼리 명명,,, 거의안쓴다.
 @NamedQuery(name = "Member.findByUsername",
         query = "select m from Member m where m.userName = :username")
 @NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
-public class Member {
+public class Member extends BaseEntity{
 
     @Id
     @GeneratedValue
