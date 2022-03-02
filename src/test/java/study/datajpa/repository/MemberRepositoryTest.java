@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
@@ -273,5 +274,10 @@ class MemberRepositoryTest {
 
         //when
         List<Member> result = memberRepository.findLockByUserName("member1");
+    }
+
+    @Test
+    void callCustom(){
+        List<Member> memberCustom = memberRepository.findMemberCustom();
     }
 }
